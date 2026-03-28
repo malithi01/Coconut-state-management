@@ -1,0 +1,118 @@
+{
+  "info": {
+    "_postman_id": "inventory-management-service",
+    "name": "Inventory Management Service",
+    "description": "Collection for testing Inventory Management Service APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        },
+        "description": "Check if the service is running"
+      }
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "Add Inventory Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"Coconut\",\n  \"quantity\": 100,\n  \"warehouseLocation\": \"Warehouse A - Room 1\",\n  \"supplierId\": \"SUP001\",\n  \"dateAdded\": \"2024-09-15\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/inventory",
+              "host": ["{{base_url}}"],
+              "path": ["api", "inventory"]
+            },
+            "description": "Add a new inventory item (coconut stock)"
+          }
+        },
+        {
+          "name": "Get All Inventory Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/inventory",
+              "host": ["{{base_url}}"],
+              "path": ["api", "inventory"]
+            },
+            "description": "Retrieve all inventory items"
+          }
+        },
+        {
+          "name": "Get Inventory Item by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "inventory", ":id"]
+            },
+            "description": "Get a specific inventory item by ID"
+          }
+        },
+        {
+          "name": "Update Inventory Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 150,\n  \"warehouseLocation\": \"Warehouse B - Room 2\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/inventory/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "inventory", ":id"]
+            },
+            "description": "Update an existing inventory item"
+          }
+        },
+        {
+          "name": "Delete Inventory Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "inventory", ":id"]
+            },
+            "description": "Delete an inventory item"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8082",
+      "type": "string"
+    }
+  ]
+}
