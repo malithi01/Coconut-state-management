@@ -232,6 +232,7 @@ router.delete('/:id', async (req, res) => {
  *               - productName
  *               - quantity
  *               - warehouseLocation
+ *               - price
  *             properties:
  *               productName:
  *                 type: string
@@ -243,6 +244,9 @@ router.delete('/:id', async (req, res) => {
  *               warehouseLocation:
  *                 type: string
  *                 example: Warehouse A - Room 1
+ *               price:
+ *                 type: number
+ *                 example: 150
  *     responses:
  *       201:
  *         description: Products received successfully and inventory updated

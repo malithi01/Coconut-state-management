@@ -237,6 +237,7 @@ router.delete("/:id", deleteSupplier);
  *               - productName
  *               - quantity
  *               - warehouseLocation
+ *               - price
  *             properties:
  *               productName:
  *                 type: string
@@ -245,6 +246,10 @@ router.delete("/:id", deleteSupplier);
  *               quantity:
  *                 type: number
  *                 example: 500
+ *               price:
+ *                 type: number
+ *                 description: Price per unit of the product
+ *                 example: 150.00
  *               warehouseLocation:
  *                 type: string
  *                 example: Warehouse A - Room 1

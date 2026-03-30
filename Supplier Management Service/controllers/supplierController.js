@@ -1,5 +1,6 @@
 const Supplier = require("../models/Supplier");
 const inventoryIntegrationService = require("../services/inventoryIntegrationService");
+const financeIntegrationService = require("../services/financeIntegrationService");
 
 const createSupplier = async (req, res) => {
   try {
@@ -129,13 +130,13 @@ const deleteSupplier = async (req, res) => {
 const receiveProducts = async (req, res) => {
   try {
     const { id: supplierId } = req.params;  // Get 'id' from route params and rename to supplierId
-    const { productName, quantity, warehouseLocation } = req.body;
+    const { productName, quantity, warehouseLocation, price } = req.body;
 
     // Validate required fields
-    if (!productName || quantity === undefined || !warehouseLocation) {
+    if (!productName || quantity === undefined || !warehouseLocation || price === undefined) {
       return res.status(400).json({
         success: false,
-        message: "Missing required fields: productName, quantity, warehouseLocation"
+        message: "Missing required fields: productName, quantity, warehouseLocation, price"
       });
     }
 
@@ -183,6 +184,17 @@ const receiveProducts = async (req, res) => {
     // Add inventory through inventory service
     const inventoryResult = await inventoryIntegrationService.addInventoryFromSupplier(inventoryData);
 
+    // Create expense in Finance Service
+    const expenseData = {
+      supplierId: supplierId,
+      supplierName: supplier.name,
+      productName,
+      quantity,
+      price,
+      warehouseLocation
+    };
+    const financeResult = await financeIntegrationService.createSupplierExpense(expenseData);
+
     return res.status(201).json({
       success: true,
       message: "Products received successfully and inventory updated",
@@ -192,6 +204,7 @@ const receiveProducts = async (req, res) => {
         location: supplier.location
       },
       inventoryData: inventoryResult,
+      financeData: financeResult,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
