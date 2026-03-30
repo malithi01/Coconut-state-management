@@ -4,8 +4,8 @@
   "description": "API Gateway for Coconut State Management Microservices",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "concurrently \"node server.js\" \"npm --prefix \\\"../Inventory Management\\\" start\" \"npm --prefix \\\"../Order Management\\\" start\"",
+    "dev": "concurrently \"nodemon server.js\" \"npm --prefix \\\"../Inventory Management\\\" run dev\" \"npm --prefix \\\"../Order Management\\\" run dev\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -25,6 +25,7 @@
     "swagger-ui-express": "^4.6.3"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "concurrently": "^8.2.0"
   }
 }
