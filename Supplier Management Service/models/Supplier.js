@@ -12,10 +12,10 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0
     },
-    quantity: {
-      type: Number,
+    receivedDate: {
+      type: Date,
       required: true,
-      min: 0
+      default: Date.now
     }
   },
   { _id: false }

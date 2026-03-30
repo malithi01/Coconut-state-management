@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Supplier Management Service is running" });
 });
 
-const PORT = process.env.PORT || 8082;
+const PORT = process.env.PORT || 8083;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
