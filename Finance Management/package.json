@@ -1,0 +1,15 @@
+{
+  "name": "coconut-factory-system",
+  "version": "1.0.0",
+  "description": "Coconut Factory Microservices Architecture",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cd finance-service && npm run dev",
+    "start": "cd finance-service && npm start",
+    "install-all": "cd finance-service && npm install && cd ../api-gateway && npm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["microservices", "coconut-factory"],
+  "author": "",
+  "license": "ISC"
+}
