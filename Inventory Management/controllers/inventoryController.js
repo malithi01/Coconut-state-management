@@ -1,4 +1,5 @@
 const Inventory = require('../models/Inventory');
+const ProductCount = require('../models/ProductCount');
 
 // Add new inventory item (POST)
 exports.addInventory = async (req, res) => {
@@ -22,6 +23,16 @@ exports.addInventory = async (req, res) => {
     });
 
     const savedInventory = await inventory.save();
+
+    // Update ProductCount - increment the total quantity for this product
+    await ProductCount.findOneAndUpdate(
+      { productName },
+      {
+        $inc: { totalQuantity: quantity },
+        lastUpdated: new Date(),
+      },
+      { upsert: true, new: true }
+    );
 
     res.status(201).json({
       success: true,
@@ -91,6 +102,15 @@ exports.updateInventory = async (req, res) => {
     const { id } = req.params;
     const { productName, quantity, warehouseLocation, supplierId, dateAdded } = req.body;
 
+    // Get the current inventory item to calculate quantity difference
+    const currentInventory = await Inventory.findById(id);
+    if (!currentInventory) {
+      return res.status(404).json({
+        success: false,
+        message: 'Inventory item not found',
+      });
+    }
+
     const updateData = {
       ...(productName && { productName }),
       ...(quantity !== undefined && { quantity }),
@@ -104,11 +124,19 @@ exports.updateInventory = async (req, res) => {
       runValidators: true,
     });
 
-    if (!updatedInventory) {
-      return res.status(404).json({
-        success: false,
-        message: 'Inventory item not found',
-      });
+    // Update ProductCount if quantity changed
+    if (quantity !== undefined && quantity !== currentInventory.quantity) {
+      const quantityDifference = quantity - currentInventory.quantity;
+      const updateProductName = productName || currentInventory.productName;
+      
+      await ProductCount.findOneAndUpdate(
+        { productName: updateProductName },
+        {
+          $inc: { totalQuantity: quantityDifference },
+          lastUpdated: new Date(),
+        },
+        { upsert: true }
+      );
     }
 
     res.status(200).json({
@@ -139,6 +167,16 @@ exports.deleteInventory = async (req, res) => {
       });
     }
 
+    // Update ProductCount - decrement the total quantity for this product
+    await ProductCount.findOneAndUpdate(
+      { productName: deletedInventory.productName },
+      {
+        $inc: { totalQuantity: -deletedInventory.quantity },
+        lastUpdated: new Date(),
+      },
+      { upsert: true }
+    );
+
     res.status(200).json({
       success: true,
       message: 'Inventory item deleted successfully',
@@ -156,18 +194,8 @@ exports.deleteInventory = async (req, res) => {
 // Get product count summary (GET)
 exports.getProductCount = async (req, res) => {
   try {
-    const productCounts = await Inventory.aggregate([
-      {
-        $group: {
-          _id: '$productName',
-          totalQuantity: { $sum: '$quantity' },
-          count: { $sum: 1 }, // Number of records for this product
-        },
-      },
-      {
-        $sort: { _id: 1 },
-      },
-    ]);
+    // Get product counts from ProductCount collection (optimized for fast retrieval)
+    const productCounts = await ProductCount.find().sort({ productName: 1 });
 
     if (productCounts.length === 0) {
       return res.status(200).json({
@@ -179,9 +207,9 @@ exports.getProductCount = async (req, res) => {
 
     // Format the response
     const formattedData = productCounts.map((item) => ({
-      productName: item._id,
+      productName: item.productName,
       totalQuantity: item.totalQuantity,
-      recordCount: item.count,
+      lastUpdated: item.lastUpdated,
     }));
 
     res.status(200).json({

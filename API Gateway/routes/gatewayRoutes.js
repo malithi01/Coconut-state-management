@@ -19,6 +19,7 @@ router.get('/', (req, res) => {
     services: {
       inventory: '/gateway/inventory',
       orders: '/gateway/orders',
+      supplier: '/gateway/supplier',
     },
     documentation: '/api-docs',
     health: '/health',

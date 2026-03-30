@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const gatewayRoutes = require('./routes/gatewayRoutes');
 const inventoryRoutes = require('./routes/inventoryRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const supplierRoutes = require('./routes/supplierRoutes');
 
 // Initialize Express app
 const app = express();
@@ -61,12 +62,24 @@ app.get('/status', async (req, res) => {
       orderStatus = 'DOWN';
     }
 
+    // Check supplier service
+    let supplierStatus = 'DOWN';
+    try {
+      await axios.get(`${serviceURLs.supplier.baseURL}/`, {
+        timeout: 2000,
+      });
+      supplierStatus = 'UP';
+    } catch (err) {
+      supplierStatus = 'DOWN';
+    }
+
     res.status(200).json({
       success: true,
       gateway: 'UP',
       services: {
         inventory: inventoryStatus,
         order: orderStatus,
+        supplier: supplierStatus,
       },
       timestamp: new Date().toISOString(),
     });
@@ -82,6 +95,7 @@ app.get('/status', async (req, res) => {
 app.use('/', gatewayRoutes);
 app.use('/gateway/inventory', inventoryRoutes);
 app.use('/gateway/orders', orderRoutes);
+app.use('/gateway/supplier', supplierRoutes);
 
 // Swagger Documentation
 const swaggerJsdoc = require('swagger-jsdoc');
