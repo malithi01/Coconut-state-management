@@ -152,3 +152,48 @@ exports.deleteInventory = async (req, res) => {
     });
   }
 };
+
+// Get product count summary (GET)
+exports.getProductCount = async (req, res) => {
+  try {
+    const productCounts = await Inventory.aggregate([
+      {
+        $group: {
+          _id: '$productName',
+          totalQuantity: { $sum: '$quantity' },
+          count: { $sum: 1 }, // Number of records for this product
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    if (productCounts.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'No inventory products found',
+        data: [],
+      });
+    }
+
+    // Format the response
+    const formattedData = productCounts.map((item) => ({
+      productName: item._id,
+      totalQuantity: item.totalQuantity,
+      recordCount: item.count,
+    }));
+
+    res.status(200).json({
+      success: true,
+      message: 'Product counts retrieved successfully',
+      data: formattedData,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error retrieving product counts',
+      error: error.message,
+    });
+  }
+};

@@ -1,0 +1,28 @@
+{
+  "name": "order-service",
+  "version": "1.0.0",
+  "description": "Order Service microservice for Coconut Production System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "microservice",
+    "order",
+    "coconut",
+    "production"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.0",
+    "mongoose": "^8.9.3",
+    "dotenv": "^16.4.5",
+    "swagger-ui-express": "^5.0.1",
+    "swagger-jsdoc": "^6.2.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

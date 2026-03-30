@@ -50,6 +50,41 @@ router.post('/inventory', inventoryController.addInventory);
 
 /**
  * @swagger
+ * /inventory/product-count:
+ *   get:
+ *     summary: Get count summary for each coconut product
+ *     tags:
+ *       - Inventory
+ *     responses:
+ *       200:
+ *         description: Product count summary
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       productName:
+ *                         type: string
+ *                       totalQuantity:
+ *                         type: number
+ *                       recordCount:
+ *                         type: number
+ *       500:
+ *         description: Server error
+ */
+router.get('/inventory/product-count', inventoryController.getProductCount);
+
+/**
+ * @swagger
  * /inventory:
  *   get:
  *     summary: Get all inventory items
