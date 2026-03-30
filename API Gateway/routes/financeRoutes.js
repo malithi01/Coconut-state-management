@@ -1,34 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const {
-  // Revenue
-  addRevenue,
-  getAllRevenue,
-  getRevenueById,
-  updateRevenue,
-  deleteRevenue,
-  // Expense
-  addExpense,
-  getAllExpenses,
-  getExpenseById,
-  updateExpense,
-  deleteExpense,
-  // Summary
-  getSummary,
-} = require('../controllers/financeController');
+const financeService = require('../services/financeService');
 
-// Import total functions from separate controllers
-const { getTotalExpenses } = require('../controllers/expenseController');
-const { getTotalRevenue } = require('../controllers/revenueController');
-
-// ============= REVENUE ENDPOINTS =============
+/**
+ * ============= REVENUE ENDPOINTS =============
+ */
 
 /**
  * @swagger
- * /finance/revenue:
+ * /gateway/finance/revenue:
  *   post:
  *     summary: Create a new revenue entry
- *     tags: [Revenue]
+ *     tags:
+ *       - Gateway Finance Revenue
  *     requestBody:
  *       required: true
  *       content:
@@ -42,20 +26,16 @@ const { getTotalRevenue } = require('../controllers/revenueController');
  *             properties:
  *               orderId:
  *                 type: string
- *                 example: "ORD123"
+ *                 example: "507f1f77bcf86cd799439011"
  *               amount:
  *                 type: number
- *                 example: 1000
+ *                 example: 50000
  *               date:
  *                 type: string
- *                 example: "2026-03-27"
+ *                 example: "2026-03-31"
  *               metadata:
  *                 type: object
  *                 description: Optional metadata about the revenue
- *                 example:
- *                   customerName: "John Doe"
- *                   productName: "Coconut"
- *                   quantity: 50
  *     responses:
  *       201:
  *         description: Revenue created successfully
@@ -64,91 +44,134 @@ const { getTotalRevenue } = require('../controllers/revenueController');
  *       500:
  *         description: Server error
  */
-router.post('/revenue', addRevenue);
+router.post('/revenue', async (req, res) => {
+  try {
+    const result = await financeService.createRevenue(req.body);
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error creating revenue',
+      error: error.message,
+    });
+  }
+});
 
 /**
  * @swagger
- * /finance/revenue:
+ * /gateway/finance/revenue:
  *   get:
  *     summary: Get all revenue entries
- *     tags: [Revenue]
+ *     tags:
+ *       - Gateway Finance Revenue
  *     responses:
  *       200:
  *         description: List of all revenues
  *       500:
  *         description: Server error
  */
-router.get('/revenue', getAllRevenue);
+router.get('/revenue', async (req, res) => {
+  try {
+    const result = await financeService.getAllRevenue();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching revenue',
+      error: error.message,
+    });
+  }
+});
 
 /**
  * @swagger
- * /finance/revenue/total:
+ * /gateway/finance/revenue/total:
  *   get:
  *     summary: Get total revenue with optional filters
- *     tags: [Revenue]
+ *     tags:
+ *       - Gateway Finance Revenue
  *     parameters:
  *       - in: query
  *         name: startDate
  *         schema:
  *           type: string
  *         description: Start date for filtering (YYYY-MM-DD)
- *         example: "2026-03-01"
  *       - in: query
  *         name: endDate
  *         schema:
  *           type: string
  *         description: End date for filtering (YYYY-MM-DD)
- *         example: "2026-03-31"
  *       - in: query
  *         name: orderId
  *         schema:
  *           type: string
- *         description: Order ID filter
- *         example: "ORD123"
+ *         description: Filter by order ID
  *     responses:
  *       200:
- *         description: Total revenue fetched successfully
+ *         description: Total revenue with filters applied
  *       500:
  *         description: Server error
  */
-router.get('/revenue/total', getTotalRevenue);
+router.get('/revenue/total', async (req, res) => {
+  try {
+    const result = await financeService.getTotalRevenue(req.query);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching total revenue',
+      error: error.message,
+    });
+  }
+});
 
 /**
  * @swagger
- * /finance/revenue/{id}:
+ * /gateway/finance/revenue/{id}:
  *   get:
  *     summary: Get revenue by ID
- *     tags: [Revenue]
+ *     tags:
+ *       - Gateway Finance Revenue
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Revenue ID
  *     responses:
  *       200:
- *         description: Revenue fetched successfully
+ *         description: Revenue details
  *       404:
  *         description: Revenue not found
  *       500:
  *         description: Server error
  */
-router.get('/revenue/:id', getRevenueById);
+router.get('/revenue/:id', async (req, res) => {
+  try {
+    const result = await financeService.getRevenueById(req.params.id);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching revenue',
+      error: error.message,
+    });
+  }
+});
 
 /**
  * @swagger
- * /finance/revenue/{id}:
+ * /gateway/finance/revenue/{id}:
  *   put:
  *     summary: Update revenue by ID
- *     tags: [Revenue]
+ *     tags:
+ *       - Gateway Finance Revenue
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Revenue ID
  *     requestBody:
  *       required: true
  *       content:
@@ -172,21 +195,32 @@ router.get('/revenue/:id', getRevenueById);
  *       500:
  *         description: Server error
  */
-router.put('/revenue/:id', updateRevenue);
+router.put('/revenue/:id', async (req, res) => {
+  try {
+    const result = await financeService.updateRevenue(req.params.id, req.body);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error updating revenue',
+      error: error.message,
+    });
+  }
+});
 
 /**
  * @swagger
- * /finance/revenue/{id}:
+ * /gateway/finance/revenue/{id}:
  *   delete:
  *     summary: Delete revenue by ID
- *     tags: [Revenue]
+ *     tags:
+ *       - Gateway Finance Revenue
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Revenue ID
  *     responses:
  *       200:
  *         description: Revenue deleted successfully
@@ -195,16 +229,30 @@ router.put('/revenue/:id', updateRevenue);
  *       500:
  *         description: Server error
  */
-router.delete('/revenue/:id', deleteRevenue);
+router.delete('/revenue/:id', async (req, res) => {
+  try {
+    const result = await financeService.deleteRevenue(req.params.id);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting revenue',
+      error: error.message,
+    });
+  }
+});
 
-// ============= EXPENSE ENDPOINTS =============
+/**
+ * ============= EXPENSE ENDPOINTS =============
+ */
 
 /**
  * @swagger
- * /finance/expense:
+ * /gateway/finance/expenses:
  *   post:
  *     summary: Create a new expense entry
- *     tags: [Expense]
+ *     tags:
+ *       - Gateway Finance Expense
  *     requestBody:
  *       required: true
  *       content:
@@ -218,20 +266,16 @@ router.delete('/revenue/:id', deleteRevenue);
  *             properties:
  *               type:
  *                 type: string
- *                 example: "Supplies"
+ *                 example: "Supplier Purchase - Green Harvest"
  *               amount:
  *                 type: number
- *                 example: 500
+ *                 example: 75000
  *               date:
  *                 type: string
- *                 example: "2026-03-27"
+ *                 example: "2026-03-31"
  *               metadata:
  *                 type: object
  *                 description: Optional metadata about the expense
- *                 example:
- *                   supplierName: "Green Harvest"
- *                   productName: "Coconut"
- *                   quantity: 100
  *     responses:
  *       201:
  *         description: Expense created successfully
@@ -240,91 +284,134 @@ router.delete('/revenue/:id', deleteRevenue);
  *       500:
  *         description: Server error
  */
-router.post('/expense', addExpense);
+router.post('/expenses', async (req, res) => {
+  try {
+    const result = await financeService.createExpense(req.body);
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error creating expense',
+      error: error.message,
+    });
+  }
+});
 
 /**
  * @swagger
- * /finance/expense:
+ * /gateway/finance/expenses:
  *   get:
  *     summary: Get all expense entries
- *     tags: [Expense]
+ *     tags:
+ *       - Gateway Finance Expense
  *     responses:
  *       200:
  *         description: List of all expenses
  *       500:
  *         description: Server error
  */
-router.get('/expense', getAllExpenses);
+router.get('/expenses', async (req, res) => {
+  try {
+    const result = await financeService.getAllExpenses();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching expenses',
+      error: error.message,
+    });
+  }
+});
 
 /**
  * @swagger
- * /finance/expense/total:
+ * /gateway/finance/expenses/total:
  *   get:
  *     summary: Get total expenses with optional filters
- *     tags: [Expense]
+ *     tags:
+ *       - Gateway Finance Expense
  *     parameters:
  *       - in: query
  *         name: startDate
  *         schema:
  *           type: string
  *         description: Start date for filtering (YYYY-MM-DD)
- *         example: "2026-03-01"
  *       - in: query
  *         name: endDate
  *         schema:
  *           type: string
  *         description: End date for filtering (YYYY-MM-DD)
- *         example: "2026-03-31"
  *       - in: query
  *         name: type
  *         schema:
  *           type: string
- *         description: Expense type filter (e.g., Supplies, Utilities)
- *         example: "Supplies"
+ *         description: Filter by expense type
  *     responses:
  *       200:
- *         description: Total expenses fetched successfully
+ *         description: Total expenses with filters applied
  *       500:
  *         description: Server error
  */
-router.get('/expense/total', getTotalExpenses);
+router.get('/expenses/total', async (req, res) => {
+  try {
+    const result = await financeService.getTotalExpenses(req.query);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching total expenses',
+      error: error.message,
+    });
+  }
+});
 
 /**
  * @swagger
- * /finance/expense/{id}:
+ * /gateway/finance/expenses/{id}:
  *   get:
  *     summary: Get expense by ID
- *     tags: [Expense]
+ *     tags:
+ *       - Gateway Finance Expense
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Expense ID
  *     responses:
  *       200:
- *         description: Expense fetched successfully
+ *         description: Expense details
  *       404:
  *         description: Expense not found
  *       500:
  *         description: Server error
  */
-router.get('/expense/:id', getExpenseById);
+router.get('/expenses/:id', async (req, res) => {
+  try {
+    const result = await financeService.getExpenseById(req.params.id);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching expense',
+      error: error.message,
+    });
+  }
+});
 
 /**
  * @swagger
- * /finance/expense/{id}:
+ * /gateway/finance/expenses/{id}:
  *   put:
  *     summary: Update expense by ID
- *     tags: [Expense]
+ *     tags:
+ *       - Gateway Finance Expense
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Expense ID
  *     requestBody:
  *       required: true
  *       content:
@@ -348,21 +435,32 @@ router.get('/expense/:id', getExpenseById);
  *       500:
  *         description: Server error
  */
-router.put('/expense/:id', updateExpense);
+router.put('/expenses/:id', async (req, res) => {
+  try {
+    const result = await financeService.updateExpense(req.params.id, req.body);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error updating expense',
+      error: error.message,
+    });
+  }
+});
 
 /**
  * @swagger
- * /finance/expense/{id}:
+ * /gateway/finance/expenses/{id}:
  *   delete:
  *     summary: Delete expense by ID
- *     tags: [Expense]
+ *     tags:
+ *       - Gateway Finance Expense
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: Expense ID
  *     responses:
  *       200:
  *         description: Expense deleted successfully
@@ -371,40 +469,47 @@ router.put('/expense/:id', updateExpense);
  *       500:
  *         description: Server error
  */
-router.delete('/expense/:id', deleteExpense);
+router.delete('/expenses/:id', async (req, res) => {
+  try {
+    const result = await financeService.deleteExpense(req.params.id);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting expense',
+      error: error.message,
+    });
+  }
+});
 
-// ============= SUMMARY ENDPOINT =============
+/**
+ * ============= SUMMARY ENDPOINTS =============
+ */
 
 /**
  * @swagger
- * /finance/summary:
+ * /gateway/finance/summary:
  *   get:
- *     summary: Get financial summary
- *     tags: [Summary]
+ *     summary: Get finance summary (total revenue vs expenses)
+ *     tags:
+ *       - Gateway Finance Summary
  *     responses:
  *       200:
- *         description: Financial summary with total revenue, expense, and profit
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 totalRevenue:
- *                   type: number
- *                   example: 5000
- *                 totalExpense:
- *                   type: number
- *                   example: 2000
- *                 profit:
- *                   type: number
- *                   example: 3000
- *                 revenueCount:
- *                   type: number
- *                 expenseCount:
- *                   type: number
+ *         description: Finance summary with revenue and expense totals
  *       500:
  *         description: Server error
  */
-router.get('/summary', getSummary);
+router.get('/summary', async (req, res) => {
+  try {
+    const result = await financeService.getSummary();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching summary',
+      error: error.message,
+    });
+  }
+});
 
 module.exports = router;
