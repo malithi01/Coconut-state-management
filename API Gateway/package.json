@@ -4,8 +4,8 @@
   "description": "API Gateway for Coconut State Management Microservices",
   "main": "server.js",
   "scripts": {
-    "start": "concurrently \"node server.js\" \"npm --prefix \\\"../Inventory Management\\\" start\" \"npm --prefix \\\"../Order Management\\\" start\"",
-    "dev": "concurrently \"nodemon server.js\" \"npm --prefix \\\"../Inventory Management\\\" run dev\" \"npm --prefix \\\"../Order Management\\\" run dev\"",
+    "start": "concurrently \"node server.js\" \"npm --prefix \\\"../Finance Management/finance-service\\\" start\" \"npm --prefix \\\"../Inventory Management\\\" start\" \"npm --prefix \\\"../Supplier Management Service\\\" start\" \"npm --prefix \\\"../Order Management\\\" start\"",
+    "dev": "concurrently \"nodemon server.js\" \"npm --prefix \\\"../Finance Management/finance-service\\\" run dev\" \"npm --prefix \\\"../Inventory Management\\\" run dev\" \"npm --prefix \\\"../Supplier Management Service\\\" run dev\" \"npm --prefix \\\"../Order Management\\\" run dev\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

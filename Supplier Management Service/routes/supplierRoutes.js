@@ -4,7 +4,8 @@ const {
   getSuppliers,
   getSupplierById,
   updateSupplier,
-  deleteSupplier
+  deleteSupplier,
+  receiveProducts
 } = require("../controllers/supplierController");
 
 const router = express.Router();
@@ -212,5 +213,56 @@ router.put("/:id", updateSupplier);
  *         description: Invalid supplier ID
  */
 router.delete("/:id", deleteSupplier);
+
+/**
+ * @swagger
+ * /supplier/{id}/receive-products:
+ *   post:
+ *     summary: Receive products from supplier and update inventory
+ *     tags: [Supplier]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Supplier ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - productName
+ *               - quantity
+ *               - warehouseLocation
+ *               - price
+ *             properties:
+ *               productName:
+ *                 type: string
+ *                 enum: [Coconut, King Coconut, Young Coconut]
+ *                 example: Coconut
+ *               quantity:
+ *                 type: number
+ *                 example: 500
+ *               price:
+ *                 type: number
+ *                 description: Price per unit of the product
+ *                 example: 150.00
+ *               warehouseLocation:
+ *                 type: string
+ *                 example: Warehouse A - Room 1
+ *     responses:
+ *       201:
+ *         description: Products received successfully and inventory updated
+ *       400:
+ *         description: Bad request - missing required fields
+ *       404:
+ *         description: Supplier not found
+ *       500:
+ *         description: Error receiving products
+ */
+router.post("/:id/receive-products", receiveProducts);
 
 module.exports = router;

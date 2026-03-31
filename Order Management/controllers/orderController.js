@@ -1,4 +1,5 @@
 const Order = require('../models/orderModel');
+const financeIntegrationService = require('../services/financeIntegrationService');
 
 /**
  * Create a new order
@@ -26,10 +27,21 @@ exports.createOrder = async (req, res) => {
       status: status || 'Pending',
     });
 
+    // Create revenue in Finance Service
+    const revenueData = {
+      orderId: order._id,
+      customerName,
+      productName,
+      quantity,
+      price,
+    };
+    const financeResult = await financeIntegrationService.createOrderRevenue(revenueData);
+
     res.status(201).json({
       success: true,
       message: 'Order created successfully',
       data: order,
+      financeData: financeResult,
     });
   } catch (error) {
     res.status(500).json({
@@ -121,6 +133,15 @@ exports.updateOrder = async (req, res) => {
       });
     }
 
+    // Get the old order data first
+    const oldOrder = await Order.findById(id);
+    if (!oldOrder) {
+      return res.status(404).json({
+        success: false,
+        error: 'Order not found',
+      });
+    }
+
     // Build update object with only provided fields
     const updateData = {};
     if (customerName !== undefined) updateData.customerName = customerName;
@@ -134,17 +155,22 @@ exports.updateOrder = async (req, res) => {
       runValidators: true,
     });
 
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        error: 'Order not found',
-      });
+    // If status was updated, notify Finance Service
+    let financeResult = null;
+    if (status !== undefined && status !== oldOrder.status) {
+      const updateData = {
+        orderId: id,
+        oldStatus: oldOrder.status,
+        newStatus: status,
+      };
+      financeResult = await financeIntegrationService.updateOrderRevenue(updateData);
     }
 
     res.status(200).json({
       success: true,
       message: 'Order updated successfully',
       data: order,
+      financeData: financeResult,
     });
   } catch (error) {
     res.status(500).json({

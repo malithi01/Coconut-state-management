@@ -15,6 +15,11 @@ const expenseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+      description: 'Additional metadata about the expense (supplier details, product info, etc.)'
+    }
   },
   {
     timestamps: true,
