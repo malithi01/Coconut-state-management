@@ -5,7 +5,7 @@ const options = {
     openapi: '3.0.0',
     info: {
       title: 'Order Service API',
-      description: 'Order Service microservice API for the Coconut Production System. This service handles selling coconut related products and managing customer orders.',
+      description: 'Order Service microservice API for the Coconut Trading & Supply Management System. This service handles selling coconut related products and managing customer orders.',
       version: '1.0.0',
       contact: {
         name: 'Support',

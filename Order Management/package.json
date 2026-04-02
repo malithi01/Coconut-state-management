@@ -1,7 +1,7 @@
 {
   "name": "order-service",
   "version": "1.0.0",
-  "description": "Order Service microservice for Coconut Production System",
+  "description": "Order Service microservice for Coconut Trading & Supply Management System",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

@@ -1,7 +1,7 @@
 {
   "name": "coconut-factory-system",
   "version": "1.0.0",
-  "description": "Coconut Factory Microservices Architecture",
+  "description": "Finance Service for Coconut Trading & Supply Management System",
   "main": "index.js",
   "scripts": {
     "dev": "cd finance-service && npm run dev",

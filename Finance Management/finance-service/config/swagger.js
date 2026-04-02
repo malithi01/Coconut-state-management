@@ -6,7 +6,7 @@ const options = {
     info: {
       title: 'Finance Service API',
       version: '1.0.0',
-      description: 'Finance Service for Coconut Factory Microservices Architecture',
+      description: 'Finance Service for Coconut Trading & Supply Management System',
     },
     servers: [
       {

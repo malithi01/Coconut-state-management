@@ -1,7 +1,7 @@
 {
   "name": "api-gateway",
   "version": "1.0.0",
-  "description": "API Gateway for Coconut State Management Microservices",
+  "description": "API Gateway for Coconut Trading & Supply Management System",
   "main": "server.js",
   "scripts": {
     "start": "concurrently \"node server.js\" \"npm --prefix \\\"../Finance Management/finance-service\\\" start\" \"npm --prefix \\\"../Inventory Management\\\" start\" \"npm --prefix \\\"../Supplier Management Service\\\" start\" \"npm --prefix \\\"../Order Management\\\" start\"",

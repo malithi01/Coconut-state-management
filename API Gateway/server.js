@@ -119,7 +119,7 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Coconut State Management API Gateway',
+      title: 'Coconut Trading & Supply Management System API Gateway',
       version: '1.0.0',
       description: 'API Gateway connecting Inventory Management and Order Management microservices',
     },
@@ -182,7 +182,7 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`\n============================================`);
-  console.log(`Coconut State Management API Gateway`);
+  console.log(`Coconut Trading & Supply Management System API Gateway`);
   console.log(`============================================`);
   console.log(`Server running on port: ${PORT}`);
   console.log(`🌐 Gateway URL: http://localhost:${PORT}`);

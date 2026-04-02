@@ -14,7 +14,7 @@ const router = express.Router();
  */
 router.get('/', (req, res) => {
   res.status(200).json({
-    message: 'Welcome to Coconut State Management API Gateway',
+    message: 'Welcome to Coconut Trading & Supply Management System API Gateway',
     version: '1.0.0',
     services: {
       inventory: '/gateway/inventory',
