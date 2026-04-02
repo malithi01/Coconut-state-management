@@ -6,7 +6,7 @@ const options = {
     info: {
       title: 'Inventory Management Service API',
       version: '1.0.0',
-      description: 'Microservice for managing coconut inventory in a microservices architecture',
+      description: 'Inventory Management Service for Coconut Trading & Supply Management System',
       contact: {
         name: 'Malithi',
         email: 'support@inventory-service.com',

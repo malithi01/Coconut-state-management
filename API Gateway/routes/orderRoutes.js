@@ -118,57 +118,6 @@ router.post('/create-with-inventory', async (req, res) => {
 /**
  * @swagger
  * /gateway/orders:
- *   post:
- *     summary: Create a new order (without inventory check)
- *     tags:
- *       - Gateway Orders
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - customerName
- *               - productName
- *               - quantity
- *               - price
- *             properties:
- *               customerName:
- *                 type: string
- *               productName:
- *                 type: string
- *               quantity:
- *                 type: number
- *               price:
- *                 type: number
- *               status:
- *                 type: string
- *                 enum: ['Pending', 'Completed', 'Cancelled']
- *     responses:
- *       201:
- *         description: Order created successfully
- *       400:
- *         description: Bad request - missing required fields
- *       500:
- *         description: Server error
- */
-router.post('/', async (req, res) => {
-  try {
-    const result = await orderService.createOrder(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error creating order',
-      error: error.message,
-    });
-  }
-});
-
-/**
- * @swagger
- * /gateway/orders:
  *   get:
  *     summary: Get all orders
  *     tags:
